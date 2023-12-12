@@ -1,29 +1,25 @@
+import json
+import random
+from typing import List
 
-from src.models.device import Device
+from src.data.data import get_data
 from src.models.mission import Mission
-from src.enums.mission_name import MissionName
-from src.models.state import State
 
 
 def main():
-    device = Device(1, "Satelite", State.FAIL)
-    mission = Mission(MissionName.GALXONE, device)
-
-    '''print(mission.__dict__)
-    print(mission.device.__dict__)
-    print(mission.device.state.value)
-    print(mission.__hash__())'''
-
-    formatted_date = mission.date.strftime("%d%m%Y%H%M%S")
-
-    data = {
-        "date": formatted_date.format(mission.date),
-        "mission": mission.missionName.name,
-        "device": mission.device.name,
-        "state": mission.device.state.name
-    }
-
-    print(data)
+    missions: List[Mission] = get_data()
+    missions_data = []
+    for mission in missions:
+        for device in mission.devices:
+            state_random = random.randint(0, len(device.states) - 1)
+            missions_data.append({
+                'name': mission.name[0],
+                'device': device.name,
+                'state': device.states[state_random].name
+            })
+    data_json = json.dumps(missions_data, indent=2)
+    with open('mission1.json', 'w') as archivo:
+        archivo.write(data_json)
 
 
 if __name__ == '__main__':

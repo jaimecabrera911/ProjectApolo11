@@ -1,17 +1,22 @@
 import datetime
-
 from datetime import datetime
+from typing import List
 
-from src.enums.mission_name import MissionName
 from src.models.device import Device
 
 
 class Mission:
 
-    def __init__(self, missionName: MissionName, device: Device) -> None:
-        self.missionName = missionName
+    def __init__(self, code: str, name: str, devices: List[Device] = None) -> None:
+        self.code = code,
+        self.name = name,
         self.date = datetime.now()
-        self.device = device
+        self.devices = devices or []
 
-    def __hash__(self) -> int:
-        return hash((self.date, self.missionName, self.device.name))
+    def to_dict(self):
+        return {
+            'code': self.code,
+            'name': self.name,
+            'date': self.date.isoformat(),
+            'devices': [device.to_dict() for device in self.devices]
+        }
